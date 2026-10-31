@@ -3,8 +3,8 @@
   "note": "The contract's site, asked for where the recorder gives the adapter no network: the screen cannot resolve the host and refuses before FlareSolverr is asked, naming the reason and never the address.",
   "request": {"method": "POST", "path": "/lemonfiber/indexer.proxy/v1/solve", "accept": "application/json"},
   "response": {
-    "status": 500,
+    "status": 400,
     "headers": {"content-type": "application/problem+json"},
-    "json": {"detail": "the host could not be resolved", "type": "refused"}
+    "json": {"detail": "the host could not be resolved", "type": "disallowed"}
   }
 }
