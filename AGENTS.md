@@ -9,9 +9,15 @@
 
 ## What this repo is
 
-A bundled part: FlareSolverr, as the stack lemonfiber ships carries it. The
+FlareSolverr as a first-party lemonfiber plugin: `plugin.toml` and the adapter
+that speaks the `indexer.proxy@1` contract in front of FlareSolverr, asking it
+through its API. The adapter is the Rust crate at the root, built on
+`lemonfiber-adapter-kit` from the core at the commit `Cargo.toml` pins, into the
+image the `Dockerfile` builds. `release.yml` publishes that image from every
+commit on `main` and from the train's tag. `plugin.toml` runs FlareSolverr alone,
+and its claim's recordings are FlareSolverr's own answers. The
 [bundle contract](https://github.com/lemonfiber/spec/blob/main/20-architecture/contracts/bundle.md)
-says how the catalogue pins it and how lemonfiber carries it.
+says how the catalogue pins this repository and how lemonfiber carries it.
 
 ## The rules you cannot break
 
@@ -24,6 +30,19 @@ says how the catalogue pins it and how lemonfiber carries it.
   files, where it has any, under `config/flaresolverr/` (`ARCH-R271`).
 - **Every service declares `reaches` and `asks_for`** (`ARCH-R270`).
 - **No Python here.** The reader is spec's `first-party-plugin` workflow's.
-- **The image is FlareSolverr's own**, so this repository is never tagged. Moving
-  the digest means recording every response again against the new image in
-  the same change, and committing the `proofs.json` the checks write.
+- **No `unwrap`, `expect`, `panic` or indexing** outside tests. The lints in
+  `Cargo.toml` are the core's.
+- **Only an address out on the internet reaches FlareSolverr's browser.** It is
+  `http` or `https`, carries no user or password, names its host by a name rather
+  than a number, and every address that name resolves to passes
+  `lemonfiber_outward`. Anything else is refused naming the reason, never the
+  address, before FlareSolverr is asked, and what is handed over is the address
+  as that check read it.
+- **The adapter answers inside the contract's deadline.** FlareSolverr is given
+  `SOLVE_WITHIN` to fetch a page and the adapter waits `ANSWER_WITHIN` for it,
+  both under the 60 seconds `indexer.proxy@1` allows.
+- **The core's crates move with the train.** The `rev` in `Cargo.toml` is the
+  core commit `targets.toml` names, the same for every `lemonfiber-*` crate.
+- **Moving FlareSolverr's digest** means recording every response again against
+  the new image in the same change, moving `RELEASE` and `DIGEST` in
+  `src/adapter.rs` with it, and committing the `proofs.json` the checks write.
