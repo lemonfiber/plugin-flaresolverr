@@ -57,8 +57,8 @@ fn standing_for(fake: &Arc<Fake>, address: &str) -> FlareSolverr {
     FlareSolverr::new(fake.clone(), BASE, Resolving::standing_for(&[address]))
 }
 
-fn refused_saying(answer: &Result<Solved, Failure>, said: &str) -> bool {
-    matches!(answer, Err(Failure::Refused { detail, .. }) if detail.contains(said))
+fn disallowed_saying(answer: &Result<Solved, Failure>, said: &str) -> bool {
+    matches!(answer, Err(Failure::Disallowed { service, detail }) if service == "FlareSolverr" && detail.contains(said))
 }
 
 #[tokio::test]
@@ -129,7 +129,7 @@ async fn only_an_http_or_https_address_naming_a_host_by_name_is_fetched() {
         ("http://93.184.215.14/", "by number"),
     ] {
         let answer = solver(&fake).solve(url).await;
-        assert!(refused_saying(&answer, said), "{url}: {answer:?}");
+        assert!(disallowed_saying(&answer, said), "{url}: {answer:?}");
     }
     assert!(fake.requests().is_empty());
 }
@@ -157,7 +157,7 @@ async fn a_name_standing_for_this_machine_or_a_network_of_its_own_is_never_fetch
             .solve("https://indexer.example/")
             .await;
         assert!(
-            refused_saying(&answer, "not the internet"),
+            disallowed_saying(&answer, "not the internet"),
             "{address}: {answer:?}"
         );
     }
@@ -175,7 +175,7 @@ async fn localhost_is_never_fetched_however_it_resolves() {
 
     let answer = solver.solve("http://localhost:8989/").await;
 
-    assert!(refused_saying(&answer, "not the internet"), "{answer:?}");
+    assert!(disallowed_saying(&answer, "not the internet"), "{answer:?}");
     assert!(fake.requests().is_empty());
 }
 
@@ -189,10 +189,13 @@ async fn a_name_that_stands_for_nothing_is_never_fetched() {
     let empty = nowhere.solve("https://indexer.example/").await;
 
     assert!(
-        refused_saying(&failing, "could not be resolved"),
+        disallowed_saying(&failing, "could not be resolved"),
         "{failing:?}"
     );
-    assert!(refused_saying(&empty, "stands for no address"), "{empty:?}");
+    assert!(
+        disallowed_saying(&empty, "stands for no address"),
+        "{empty:?}"
+    );
     assert!(fake.requests().is_empty());
 }
 

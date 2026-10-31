@@ -130,10 +130,10 @@ impl FlareSolverr {
 #[async_trait]
 impl Solving for FlareSolverr {
     async fn solve(&self, url: &str) -> Result<Solved, Failure> {
-        let url = self
-            .outside(url)
-            .await
-            .map_err(|why| self.endpoint.refused(why))?;
+        let url = self.outside(url).await.map_err(|why| Failure::Disallowed {
+            service: SERVICE.to_owned(),
+            detail: why.to_owned(),
+        })?;
         let body = serde_json::json!({
             "cmd": GET,
             "url": url,
