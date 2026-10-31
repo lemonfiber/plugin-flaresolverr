@@ -21,21 +21,27 @@ fn unfenced_proxies(manifest: &str) -> Vec<String> {
     toml::from_str::<lemonfiber_plugin::Manifest>(manifest).map_or_else(
         |why| vec![why.to_string()],
         |manifest| {
-            manifest
+            let fetching: Vec<&str> = manifest
                 .services
-                .into_iter()
+                .iter()
                 .filter(|service| {
                     service.provides.iter().any(|capability| {
                         capability == lemonfiber_contract::capabilities::indexer::proxy::CAPABILITY
                     })
                 })
+                .map(|service| service.fronts.as_deref().unwrap_or(&service.id))
+                .collect();
+            manifest
+                .services
+                .iter()
+                .filter(|service| fetching.contains(&service.id.as_str()))
                 .filter(|service| {
                     !service
                         .network
                         .as_ref()
                         .is_some_and(|network| network.fenced)
                 })
-                .map(|service| service.id)
+                .map(|service| service.id.clone())
                 .collect()
         },
     )
