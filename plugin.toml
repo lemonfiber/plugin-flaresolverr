@@ -25,6 +25,7 @@ reaches     = "the indexer sites that challenge it"
 asks_for    = "Fetches a page through a headless browser when an indexer sits behind bot protection, which means it visits that indexer directly."
 provides    = ["indexer.proxy"]
 replaces    = "flaresolverr"
+network     = { fenced = true }
 
 [service.env]
 LOG_LEVEL = { setting = "flaresolverr:log-level", default = "info" }

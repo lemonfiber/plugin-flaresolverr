@@ -1,10 +1,12 @@
 //! FlareSolverr, asked through its API: a page fetched past its challenge by the headless
 //! browser it drives, and whether it answers.
 //!
-//! Only an address out on the internet is handed to the browser: `http` or `https`, with
-//! no user or password, naming its host by a name rather than a number, and a name every
+//! Every address is screened before the browser is handed it: `http` or `https`, with no
+//! user or password, naming its host by a name rather than a number, and a name every
 //! address of which `lemonfiber_outward` passes. What is handed over is the address as
-//! that check read it.
+//! the screen read it. The screen is a first refusal, not the protection: the browser
+//! follows redirects and resolves the name again, and what holds it off every private
+//! address and the host's own is the fence FlareSolverr runs inside.
 
 use std::sync::Arc;
 use std::time::Duration;
@@ -48,8 +50,8 @@ pub const ANSWER_WITHIN: Duration = Duration::from_secs(55);
 /// The schemes a page is fetched over.
 const FETCHED_OVER: [&str; 2] = ["http", "https"];
 
-/// One FlareSolverr, asked over its API at its address, handed only addresses out on
-/// the internet as `resolver` says what a name stands for.
+/// One FlareSolverr, asked over its API at its address, handed only addresses the screen
+/// passes as `resolver` says what a name stands for.
 pub struct FlareSolverr {
     endpoint: Endpoint,
     resolver: Arc<dyn Resolver>,
@@ -99,8 +101,8 @@ impl FlareSolverr {
         }
     }
 
-    /// `url` as the check read it, where it is an address out on the internet, or why
-    /// it is not, naming the reason and never the address.
+    /// `url` as the screen read it, where it passes as an address out on the internet, or
+    /// why it does not, naming the reason and never the address.
     async fn outside(&self, url: &str) -> Result<String, &'static str> {
         let read = Url::parse(url).map_err(|_| "the address cannot be read")?;
         if !FETCHED_OVER.contains(&read.scheme()) {
