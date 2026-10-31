@@ -16,6 +16,17 @@ FlareSolverr's image is its own. The adapter that speaks lemonfiber's
 image is published from every commit on `main` and from the release train's tag.
 The catalogue's pin moves by a reviewed pull request.
 
+## The fence
+
+FlareSolverr's browser fetches whatever address it is handed. Its service is
+declared `network = { fenced = true }`, so lemonfiber runs it inside a fence
+whose rules refuse every connection to a private address or to the host. That
+fence is the boundary. The adapter also screens each address before handing it
+over, refusing any that is not `http` or `https`, carries a user or password,
+names its host by number, or resolves to an address of this machine or a network
+of its own. The screen is a first refusal only, because the browser follows
+redirects and resolves names again.
+
 ## What is here
 
 | Path | What it is |

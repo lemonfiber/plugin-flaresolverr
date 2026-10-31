@@ -32,12 +32,18 @@ says how the catalogue pins this repository and how lemonfiber carries it.
 - **No Python here.** The reader is spec's `first-party-plugin` workflow's.
 - **No `unwrap`, `expect`, `panic` or indexing** outside tests. The lints in
   `Cargo.toml` are the core's.
-- **Only an address out on the internet reaches FlareSolverr's browser.** It is
-  `http` or `https`, carries no user or password, names its host by a name rather
-  than a number, and every address that name resolves to passes
-  `lemonfiber_outward`. Anything else is refused naming the reason, never the
-  address, before FlareSolverr is asked, and what is handed over is the address
-  as that check read it.
+- **FlareSolverr runs fenced, and the fence is the boundary.** Its service says
+  `network = { fenced = true }`, so it runs inside the fence lemonfiber writes
+  beside it, whose rules refuse every private address and the host's own.
+  `tests/manifest.rs` refuses a manifest whose `indexer.proxy` service is not
+  fenced.
+- **The adapter screens every address first.** It is `http` or `https`, carries
+  no user or password, names its host by a name rather than a number, and every
+  address that name resolves to passes `lemonfiber_outward`. Anything else is
+  refused naming the reason, never the address, before FlareSolverr is asked, and
+  what is handed over is the address as the screen read it. The browser follows
+  redirects and resolves names again, so the screen is a first refusal and never
+  the protection.
 - **The adapter answers inside the contract's deadline.** FlareSolverr is given
   `SOLVE_WITHIN` to fetch a page and the adapter waits `ANSWER_WITHIN` for it,
   both under the 60 seconds `indexer.proxy@1` allows.
