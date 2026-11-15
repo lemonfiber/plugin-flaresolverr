@@ -3,11 +3,11 @@ use std::sync::Arc;
 
 use lemonfiber_fixtures::http::{Answer, Fake};
 use lemonfiber_fixtures::ports::Resolving;
-use lemonfiber_ports::http::Method;
+use lemonfiber_ports::http::{Method, JSON};
 use lemonfiber_ports::service::{Cookie, Failure, Solved, Solving as _};
 use serde_json::{json, Value};
 
-use super::{FlareSolverr, SERVICE, SOLVE_WITHIN};
+use super::{FlareSolverr, CONTENT_TYPE, SERVICE, SOLVE_WITHIN};
 
 const BASE: &str = "http://flaresolverr:8191";
 
@@ -85,6 +85,10 @@ async fn a_page_is_fetched_through_its_api_with_the_cookies_that_cleared_it() {
     assert_eq!(
         asked.as_ref().map(|asked| asked.url.as_str()),
         Some("http://flaresolverr:8191/v1")
+    );
+    assert_eq!(
+        asked.as_ref().map(|asked| asked.headers.clone()),
+        Some(vec![(CONTENT_TYPE.to_owned(), JSON.to_owned())])
     );
     let body: Value = asked
         .and_then(|asked| asked.body)

@@ -58,3 +58,32 @@ fn a_manifest_whose_indexer_proxy_service_is_not_fenced_is_refused() {
     assert_ne!(unfenced, manifest());
     assert_eq!(unfenced_proxies(&unfenced), vec!["flaresolverr".to_owned()]);
 }
+
+fn published(manifest: &str) -> Vec<String> {
+    toml::from_str::<lemonfiber_plugin::Manifest>(manifest).map_or_else(
+        |why| vec![why.to_string()],
+        |manifest| {
+            manifest
+                .services
+                .iter()
+                .filter(|service| service.port.is_some() || service.bind.is_some())
+                .map(|service| service.id.clone())
+                .collect()
+        },
+    )
+}
+
+#[test]
+fn no_service_publishes_a_port_on_the_host() {
+    assert_eq!(published(&manifest()), Vec::<String>::new());
+}
+
+#[test]
+fn a_manifest_publishing_the_solver_on_the_host_is_refused() {
+    let exposed = manifest().replace(
+        "listens     = 8191\n",
+        "port        = 8191\nbind        = \"loopback\"\nlistens     = 8191\n",
+    );
+    assert_ne!(exposed, manifest());
+    assert_eq!(published(&exposed), vec!["flaresolverr".to_owned()]);
+}
