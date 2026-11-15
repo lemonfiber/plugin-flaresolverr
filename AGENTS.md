@@ -24,8 +24,12 @@ says how the catalogue pins this repository and how lemonfiber carries it.
 - **The plugin id is the service's id** (`ARCH-R266`). The container, the
   configuration directory, the settings and the journal keep their names.
 - **One service, speaking no contract**, while the bundle assembles it. It
-  declares `replaces` naming its own id, which is how it takes the id, the port
-  and the hostname the bundle reserves for it (`ARCH-R222`).
+  declares `replaces` naming its own id, which is how it takes the id and the
+  hostname the bundle reserves for it (`ARCH-R222`).
+- **FlareSolverr publishes no port on the host.** Only the adapter and the indexer
+  reach it, on the stack's network, so nothing on the machine asks it for a page
+  past the adapter's screen. The fence keeps every connection it makes, redirects
+  included, off the machine, the home network and the stack's own services.
 - **Its claims' recordings sit under `recordings/flaresolverr/`**, and its starting
   files, where it has any, under `config/flaresolverr/` (`ARCH-R271`).
 - **Every service declares `reaches` and `asks_for`** (`ARCH-R270`).
