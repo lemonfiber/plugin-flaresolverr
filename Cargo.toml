@@ -25,6 +25,9 @@ serde_json = "1"
 url = "2"
 tokio = { version = "1", features = ["macros", "net", "rt-multi-thread", "signal", "time"] }
 
+[build-dependencies]
+toml = "1.1"
+
 [dev-dependencies]
 lemonfiber-fixtures = { git = "https://github.com/lemonfiber/lemonfiber", rev = "f1613877bd9141210c49dfa168830343c811a0e0" }
 axum = { version = "0.8", default-features = false, features = ["http1", "tokio", "json"] }

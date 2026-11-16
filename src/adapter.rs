@@ -18,8 +18,7 @@ pub const UPSTREAM: &str = "FlareSolverr";
 /// The FlareSolverr release this adapter's recordings were taken from.
 pub const RELEASE: &str = "v3.5.2";
 
-/// The digest of the image that release's recordings were taken from.
-pub const DIGEST: &str = "sha256:c80ae007ce2ccdcd217a12426e4f039ef763ff90738c808d38810c3e59323767";
+include!(concat!(env!("OUT_DIR"), "/fronted.rs"));
 
 /// What this adapter says it is: the contract it speaks and the release it supports.
 #[must_use]
