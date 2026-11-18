@@ -15,9 +15,6 @@ pub const ADDRESS: &str = "http://flaresolverr:8191";
 /// The upstream this adapter fronts, as its project names itself.
 pub const UPSTREAM: &str = "FlareSolverr";
 
-/// The FlareSolverr release this adapter's recordings were taken from.
-pub const RELEASE: &str = "v3.5.2";
-
 include!(concat!(env!("OUT_DIR"), "/fronted.rs"));
 
 /// What this adapter says it is: the contract it speaks and the release it supports.
